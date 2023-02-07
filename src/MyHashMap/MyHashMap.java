@@ -1,16 +1,15 @@
 package MyHashMap;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 
-public class MyHashMap {
+public class MyHashMap<K, V> {
     private static final int INITIAL_CAPACITY = 16;
     private static final double LOAD_FACTOR = 0.75;
-    private Node[] array = new Node[INITIAL_CAPACITY];
+    private Node<K, V>[] array = new Node[INITIAL_CAPACITY];
     private int size = 0;
 
-    public void put(Object key, Object value) {
+    public void put(K key, V value) {
         if (size >= array.length * LOAD_FACTOR) {
             increaseArray();
         }
@@ -20,11 +19,11 @@ public class MyHashMap {
         }
     }
 
-    private boolean put(Object key, Object value, Node[] dst) {
+    private boolean put(K key, V value, Node<K, V>[] dst) {
         int position = getElementPosition(key, dst.length);
-        Node existedElement = dst[position];
+        Node<K, V> existedElement = dst[position];
         if (existedElement == null) {
-            Node entry = new Node(key, value, null);
+            Node<K, V> entry = new Node<>(key, value, null);
             dst[position] = entry;
             return true;
         } else {
@@ -34,7 +33,7 @@ public class MyHashMap {
                     return false;
                 }
                 if (existedElement.next == null) {
-                    existedElement.next = new Node(key, value, null);
+                    existedElement.next = new Node<>(key, value, null);
                     return true;
                 }
                 existedElement = existedElement.next;
@@ -45,7 +44,7 @@ public class MyHashMap {
 
     public Object get(Object key) {
         int position = getElementPosition(key, array.length);
-        Node existedElement = array[position];
+        Node<K, V> existedElement = array[position];
         while (existedElement != null) {
             if (existedElement.key.equals(key)) {
                 return existedElement.value;
@@ -57,13 +56,13 @@ public class MyHashMap {
 
     public void remove(Object key) {
         int position = getElementPosition(key, array.length);
-        Node existedElement = array[position];
+        Node<K, V> existedElement = array[position];
         if (existedElement != null && existedElement.key.equals(key)) {
             array[position] = existedElement.next;
             size--;
         } else {
             while (existedElement != null) {
-                Node nextElement = existedElement.next;
+                Node<K, V> nextElement = existedElement.next;
                 if (nextElement == null) {
                     return;
                 }
@@ -88,9 +87,9 @@ public class MyHashMap {
     }
 
     private void increaseArray() {
-        Node[] newArray = new Node[array.length * 2];
-        for (Node node : array) {
-            Node existedElement = node;
+        Node<K, V>[] newArray = new Node[array.length * 2];
+        for (Node<K, V> node : array) {
+            Node<K, V> existedElement = node;
             while (existedElement != null) {
                 put(existedElement.key, existedElement.value, newArray);
                 existedElement = existedElement.next;
@@ -101,20 +100,26 @@ public class MyHashMap {
 
     @Override
     public String toString() {
+        StringBuilder result = new StringBuilder();
+        for (Object object : array) {
+            if (object != null) {
+                result.append(object).append(" ");
+            }
+        }
+        return result.toString().trim();
 
-        return Arrays.toString(array);
     }
 
     private int getElementPosition(Object object, int arrayLength) {
         return Math.abs(object.hashCode() % arrayLength);
     }
 
-    private static class Node {
-        private final Object key;
-        private Object value;
-        private Node next;
+    private static class Node<K, V> {
+        private final K key;
+        private V value;
+        private Node<K, V> next;
 
-        public Node(Object key, Object value, Node next) {
+        public Node(K key, V value, Node<K, V> next) {
             this.key = key;
             this.value = value;
             this.next = next;
@@ -122,14 +127,14 @@ public class MyHashMap {
 
         @Override
         public String toString() {
-            return  key + " = " + value;
+            return key + " = " + value;
         }
 
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            Node node = (Node) o;
+            Node<?, ?> node = (Node<?, ?>) o;
             return Objects.equals(key, node.key) && Objects.equals(value, node.value);
         }
 

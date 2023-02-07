@@ -1,37 +1,37 @@
 package MyQueue;
 
 
-
-public class MyQueue {
-    private Node first; //ссылка на первый обьект
-    private Node last; //ссылка на последний обьект
+public class MyQueue<T> {
+    private Node<T> first; //ссылка на первый обьект
+    private Node<T> last; //ссылка на последний обьект
     private int size = 0;
 
-    public void add(Object value) {
+    public void add(T value) {
         if (size == 0) {
-            first = new Node(null, value, null);
+            first = new Node<>(null, value, null);
             last = first;
         } else {
-            Node secondLast = last;
-            last = new Node(secondLast, value, null);
+            Node<T> secondLast = last;
+            last = new Node<>(secondLast, value, null);
             secondLast.next = last;
         }
         size++;
 
     }
 
-    public Node getIndex(int index) {
+    public Node<T> getNodeByIndex(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException();
         }
-        Node node = first;
+        Node<T> node = first;
         for (int i = 0; i < index; i++) {
             node = node.next;
         }
         return node;
     }
-    public Object get(int index){
-        Node node = first;
+
+    public Object get(int index) {
+        Node<T> node = first;
         for (int i = 0; i < index; i++) {
             node = node.next;
         }
@@ -39,9 +39,9 @@ public class MyQueue {
     }
 
     public void remove(int index) {
-        Node node = getIndex(index);
-        Node nodeNext = node.next;
-        Node nodePrevious = node.previous;
+        Node<T> node = getNodeByIndex(index);
+        Node<T> nodeNext = node.next;
+        Node<T> nodePrevious = node.previous;
         if (nodePrevious != null) {
             nodePrevious.next = nodeNext;
         } else {
@@ -66,21 +66,36 @@ public class MyQueue {
         size = 0;
 
     }
-    public Object peek(){
+
+    public Object peek() {
         return size > 0 ? get(0) : null;
     }
-    public Object pool(){
+
+    public Object pool() {
         Object returnFirstElement = peek();
         remove(0);
         return returnFirstElement;
     }
 
-    private static class Node {
-        private Node previous; // ссылка на предыдущий обьект
-        private Object value;
-        private Node next; // ссылка на следующий обьект
+    @Override
+    public String toString() {
+        Node<T> node = first;
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < size; i++) {
+            result.append(node.value.toString()).append(" ");
+            node = node.next;
 
-        public Node(Node previous, Object value, Node next) {
+        }
+        return result.toString().strip();
+
+    }
+
+    private static class Node<E> {
+        private Node<E> previous; // ссылка на предыдущий обьект
+        private E value;
+        private Node<E> next; // ссылка на следующий обьект
+
+        public Node(Node<E> previous, E value, Node<E> next) {
             this.previous = previous;
             this.value = value;
             this.next = next;

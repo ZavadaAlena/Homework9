@@ -1,36 +1,40 @@
 package MyLinkedList;
 
 
-public class MyLinkedList {
-    private Node first; //ссылка на первый обьект
-    private Node last; //ссылка на последний обьект
+public class MyLinkedList<E> {
+    private Node<E> first; //ссылка на первый обьект
+    private Node<E> last; //ссылка на последний обьект
     private int size = 0;
 
-    public void add(Object value) {
+    public void add(E value) {
         if (size == 0) {
-            first = new Node(null, value, null);
+            first = new Node<>(null, value, null);
             last = first;
         } else {
-            Node secondLast = last;
-            last = new Node(secondLast, value, null);
+            Node<E> secondLast = last;
+            last = new Node<>(secondLast, value, null);
             secondLast.next = last;
         }
         size++;
 
     }
 
-    public Node getIndex(int index) {
+    public Node<E> getNodeByIndex(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException();
         }
-        Node node = first;
+        Node<E> node = first;
         for (int i = 0; i < index; i++) {
             node = node.next;
         }
         return node;
     }
-    public Object get(int index){
-        Node node = first;
+
+    public Object get(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+        Node<E> node = first;
         for (int i = 0; i < index; i++) {
             node = node.next;
         }
@@ -38,9 +42,9 @@ public class MyLinkedList {
     }
 
     public void remove(int index) {
-        Node node = getIndex(index);
-        Node nodeNext = node.next;
-        Node nodePrevious = node.previous;
+        Node<E> node = getNodeByIndex(index);
+        Node<E> nodeNext = node.next;
+        Node<E> nodePrevious = node.previous;
         if (nodePrevious != null) {
             nodePrevious.next = nodeNext;
         } else {
@@ -66,12 +70,25 @@ public class MyLinkedList {
 
     }
 
-    private static class Node {
-        private Node previous; // ссылка на предыдущий обьект
-        private Object value;
-        private Node next; // ссылка на следующий обьект
+    @Override
+    public String toString() {
+        Node<E> node = first;
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < size; i++) {
+            result.append(node.value.toString()).append(" ");
+            node = node.next;
 
-        public Node(MyLinkedList.Node previous, Object value, MyLinkedList.Node next) {
+        }
+        return result.toString().strip();
+
+    }
+
+    private static class Node<T> {
+        private Node<T> previous; // ссылка на предыдущий обьект
+        private T value;
+        private Node<T> next; // ссылка на следующий обьект
+
+        public Node(Node<T> previous, T value, Node<T> next) {
             this.previous = previous;
             this.value = value;
             this.next = next;

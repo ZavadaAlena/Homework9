@@ -1,21 +1,20 @@
 package MyStack;
 
-import java.util.Arrays;
-
-public class MyStack {
-    private Object [] array = new Object[10];
+public class MyStack<T> {
+    private Object[] array = new Object[10];
     private int size = 0;
 
-    public void push (Object value){
+    public void push(Object value) {
         array[size] = value;
         size++;
-        if( size == array.length){
-            Object [] newValue = new Object[array.length * 2];
+        if (size == array.length) {
+            Object[] newValue = new Object[array.length * 2];
             System.arraycopy(array, 0, newValue, 0, array.length);
             array = newValue;
         }
     }
-    public void remove (int index) {
+
+    public void remove(int index) {
         if (index >= 0 && index < size) {
             for (int i = index; i < array.length - 1; i++) {
                 array[i] = array[i + 1];
@@ -24,7 +23,7 @@ public class MyStack {
         }
     }
 
-    public void clear(){
+    public void clear() {
         array = new Object[1];
         size = 0;
     }
@@ -37,26 +36,31 @@ public class MyStack {
     public Object get(int index) {
         if (index >= 0 && index < size) {
             return array[index];
-        }else {
+        } else {
             return "Element not found";
         }
     }
-    public Object peek(){
-        return size > 0 ? get(size-1) : null;
+
+    public Object peek() {
+        return size > 0 ? get(size - 1) : null;
     }
-    public Object pop(){
+
+    public Object pop() {
         Object returnLastElement = peek();
-        remove(size-1);
+        remove(size - 1);
         return returnLastElement;
     }
 
     @Override
     public String toString() {
-        return Arrays.toString(array);
+        StringBuilder result = new StringBuilder();
+        for (Object object : array) {
+            if (object != null) {
+                result.append(object).append(" ");
+            }
+        }
+        return result.toString().trim();
+
     }
-
-
-
-
 }
 
